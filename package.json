@@ -13,7 +13,8 @@
   "keywords": [
     "wrapper",
     "hooks",
-    "aspects"
+    "aspects",
+    "concurix"
   ],
   "author": "Concurix Corporation, <support@concurix.com> (http://www.concurix.com)",
   "license": "MIT",
