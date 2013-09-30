@@ -1,0 +1,23 @@
+{
+  "name": "concurix-wrap",
+  "version": "0.0.1",
+  "description": "Wrap javascript functions according to configurable rules.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Concurix/concurix-wrap.git"
+  },
+  "keywords": [
+    "wrapper",
+    "hooks",
+    "aspects"
+  ],
+  "author": "Concurix Corporation, <support@concurix.com> (http://www.concurix.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Concurix/concurix-wrap/issues"
+  }
+}
