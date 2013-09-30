@@ -11,7 +11,9 @@
 // which is set to 'true' when it's in concurixjs code and 'false' when in user's code
 var block_tracing = false;
 var crypto = require('crypto');
-var extend = require('./util').extend;
+var util = require('./util');
+var extend = util.extend;
+var log = util.log;
 
 // Main wrap function.  For any future contributors, note that we use a number of locally 
 // created objects so that we can have very precise control over instances and where the prototype
@@ -172,13 +174,4 @@ function computeHash(str){
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-// quick n dirty tests
-
-var a = function a(){
-  console.log("hello");
-}
-
-b = module.exports(a).getProxy();
-a();
-b();
 
