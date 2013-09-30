@@ -68,7 +68,7 @@ module.exports = function wrap(wrapFun){
     },
     
     clientState: null,
-    clienState: function clientState(clientState){
+    state: function state(clientState){
       this.clientState = clientState;
       return this;
     },
@@ -91,6 +91,7 @@ module.exports = function wrap(wrapFun){
         //save caller info and call cxBeforeHook
         try {
           //WEIRD BEHAVIOR ALERT:  the nodejs debug module gives us line numbers that are zero index based; add 1
+          trace.moduleName = state.moduleName;
           trace.funInfo = state.funInfo;
           trace.processId = process.pid;
           trace.args = arguments;
