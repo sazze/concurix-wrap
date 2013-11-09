@@ -38,10 +38,16 @@ module.exports = function wrap(wrapFun){
       this.moduleName = moduleName;
       return this;
     },
+
+    functionName: null,
+    name: function name(functionName){
+      this.functionName = functionName;
+      return this;
+    },
   
     computeFunctionInfo: function computeFunctionInfo(){
       var funInfo = this.funInfo = {};
-      funInfo.name = this.orgFun.name || 'anonymous';
+      funInfo.name = this.functionName || this.orgFun.name || 'anonymous';
       funInfo.abortWrap = false;
 
       //first try to get info from the debug object if it's available, as that will be more accurate
