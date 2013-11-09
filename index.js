@@ -76,6 +76,18 @@ module.exports = function wrap(wrapFun){
     },
   
     getProxy: function getProxy(){
+      //first handle the case where we are wrapping a proxy or wrapping a function that already has a proxy
+      //TODO--it might be useful to try to merge clientState if we already have a proxy.
+      if(this.orgFun.__concurix_wrapped_by__){
+        extend(this.orgFun.__concurix_wrapped_by__, this.orgFun);
+        return this.orgFun.__concurix_wrapped_by__;
+      }
+      if(this.orgFun.__concurix_wrapper_for__){
+        extend(this.orgFun, this.orgFun.__concurix_proxy_state__.orgFun);
+        return this.orgFun;
+      }
+
+      //otherwise, we are       
       var concurixProxy = function() {
         var self = this;
         var state = arguments.callee.__concurix_proxy_state__;

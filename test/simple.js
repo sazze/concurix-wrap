@@ -1,13 +1,16 @@
 var should = require('should');
 var wrap = require('../index.js');
 
-function a(arg1, arg2){
+function singleton(arg1, arg2){
   return arg1 + arg2;
 }
 
 describe('basic wrapping test', function(){
   describe('wrap only', function(){
     it('should return arg1 + arg2 after wrapping', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
       var b = wrap(a).getProxy();
       b(1,2).should.equal(3);
     });
@@ -15,6 +18,9 @@ describe('basic wrapping test', function(){
   
   describe('test before', function(){
     it('should get before hook called', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
       //do the tests outside of the hook
       var trace, clientState;
       var b = wrap(a)
@@ -31,6 +37,9 @@ describe('basic wrapping test', function(){
   
   describe('test after', function(){
     it('should get before hook called', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
       //do the tests outside of the hook
       var trace, clientState;
       var b = wrap(a)
@@ -47,6 +56,9 @@ describe('basic wrapping test', function(){
   }); 
   describe('test client state', function(){
     it('should get before hook called', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
       //do the tests outside of the hook
       var trace, clientState;
       var b = wrap(a)
@@ -65,6 +77,10 @@ describe('basic wrapping test', function(){
   });
   describe('test module name', function(){
     it('should get before hook called', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
+
       //do the tests outside of the hook
       var trace, clientState;
       var b = wrap(a)
@@ -86,6 +102,10 @@ describe('basic wrapping test', function(){
 
   describe('test isWrapper', function() {
     it('isWrapper should be true', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
+
       var b = wrap(a).getProxy();
       wrap.isWrapper(b).should.be.true;
       wrap.isWrapper(a).should.be.false;
@@ -94,6 +114,10 @@ describe('basic wrapping test', function(){
 
   describe('test getWrapper', function(){
     it('should get wrapper', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
+
       var b = wrap(a).getProxy();
       wrap.getWrapper(a).should.equal(b);
     });
@@ -101,6 +125,10 @@ describe('basic wrapping test', function(){
 
   describe('test extendOriginalToWrapper', function(){
     it('should extend Original', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
+
       var b = wrap(a).getProxy();
       a.newField = 'hello';
       b.should.not.have.property('newField');
@@ -108,12 +136,27 @@ describe('basic wrapping test', function(){
     });
   });
 
-   describe('test extendWrapperToOriginal', function(){
+  describe('test extendWrapperToOriginal', function(){
     it('should extend Original', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
+
       var b = wrap(a).getProxy();
       b.newField2 = 'hello';
       a.should.not.have.property('newField2');
       wrap.extendWrapperToOriginal(b).newField2.should.equal('hello');
+    });
+
+  describe('test no double wrap', function(){
+    it('should only wrap once', function(){
+      function a(arg1, arg2){
+        return arg1 + arg2;
+      }      
+      var b = wrap(a).getProxy();
+      var c = wrap(a).getProxy();
+      b.should.equal(c);
+      });
     });
   }); 
 });
