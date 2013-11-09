@@ -102,19 +102,16 @@ describe('basic wrapping test', function(){
 
   describe('test function name', function(){
     it('should get before hook called for name test', function(){
-      function a(arg1, arg2){
-        return arg1 + arg2;
-      }      
-
+     
       //do the tests outside of the hook
       var trace, clientState;
-      var b = wrap(a)
+      var b = wrap(function(arg1, arg2){ return arg1 + arg2})
         .after(function(traceArg, clientStateArg){ 
           trace = traceArg;
           clientState = clientStateArg;})
         .state('hello')
         .module('test')
-        .name('foobar')
+        .nameIfNeeded('foobar')
         .getProxy();
       b(1,2).should.equal(3);
       trace.args['0'].should.equal(1);

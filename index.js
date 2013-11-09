@@ -40,14 +40,14 @@ module.exports = function wrap(wrapFun){
     },
 
     functionName: null,
-    name: function name(functionName){
+    nameIfNeeded: function nameIfNeeded(functionName){
       this.functionName = functionName;
       return this;
     },
   
     computeFunctionInfo: function computeFunctionInfo(){
       var funInfo = this.funInfo = {};
-      funInfo.name = this.functionName || this.orgFun.name || 'anonymous';
+      funInfo.name = this.orgFun.name || this.functionName ||  'anonymous';
       funInfo.abortWrap = false;
 
       //first try to get info from the debug object if it's available, as that will be more accurate
