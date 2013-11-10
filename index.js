@@ -60,6 +60,9 @@ module.exports = function wrap(wrapFun){
           funInfo.file = script.name;
           funInfo.loc  = v8debug.Debug.findFunctionSourceLocation(this.orgFun);
           funInfo.id   = funInfo.file + ":" + funInfo.loc.position;
+          //console.log("found script ", funInfo.file, funInfo.loc.line, this.functionName);
+          //console.log("calling it ", funInfo.name, this.clientState.modInfo.top);
+          //console.log("source ", this.orgFun.toString());
         }
       } else {
         // do not wrap native code or extensions
