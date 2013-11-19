@@ -28,13 +28,13 @@ function findPrimes(n) {
   while (primes.length < n) {
     isPrime = true
     for (j = 0; j < primes.length; j++) {
-      if (i % primes[j] == 0) {
+      if (i % primes[j] === 0) {
         isPrime = false
         break;
       }
     }
     if (isPrime) primes.push(i);
-    i++;
+    i+=2;
   }
   return primes;
 }
