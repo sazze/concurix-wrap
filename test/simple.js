@@ -122,6 +122,58 @@ describe('basic wrapping test', function(){
       trace.moduleName.should.equal('test');
     });
   });
+
+  describe('test function length', function(){
+    it('length of proxy arguments should be 0', function(){
+     
+      //do the tests outside of the hook
+      var b = wrap(function(){ return 0;})
+        .module('test')
+        .nameIfNeeded('foobar')
+        .getProxy();
+      b.length.should.equal(0);
+    });
+    it('length of proxy arguments should be 1', function(){
+     
+      //do the tests outside of the hook
+      var b = wrap(function(arg1){ return arg1;})
+        .module('test')
+        .nameIfNeeded('foobar')
+        .getProxy();
+      b.length.should.equal(1);
+    });
+    it('length of proxy arguments should be 2', function(){
+     
+      //do the tests outside of the hook
+      var b = wrap(function(arg1, arg2){ return arg1 + arg2;})
+        .module('test')
+        .nameIfNeeded('foobar')
+        .getProxy();
+      b.length.should.equal(2);
+    });    
+  });
+
+  describe('test proxy name', function(){
+    it('proxy name should be empty', function(){
+     
+      //do the tests outside of the hook
+      var b = wrap(function(){ return 0;})
+        .module('test')
+        .nameIfNeeded('foobar')
+        .getProxy();
+      b.name.should.equal('');
+    });
+    it('proxy name should be barfoo', function(){
+     
+      //do the tests outside of the hook
+      var b = wrap(function barfoo(arg1){ return arg1;})
+        .module('test')
+        .nameIfNeeded('foobar')
+        .getProxy();
+      b.name.should.equal('barfoo');
+    });
+  });
+
   describe('test isWrapper', function() {
     it('isWrapper should be true', function(){
       function a(arg1, arg2){

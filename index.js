@@ -171,15 +171,32 @@ module.exports = function wrap(wrapFun){
       if( this.funInfo.abortWrap ){
         return this.orgFun;
       }
-      // keep the original func name using eval
-      var orgFuncName = this.orgFun.name || 'anonymous';
-      var proxyStr = concurixProxy.toString().replace(/^function/, 'function ' + orgFuncName);
+      // keep the original func name and length using eval
+      var orgFuncName = this.orgFun.name;
+
+      if (orgFuncName) {
+        proxyStr = concurixProxy.toString().replace(/^function/, 'function ' + orgFuncName);
+
+      } else {
+        proxyStr = concurixProxy.toString();
+      }
+
+      var i = 0;
+      var argStr = '';
+      for( i ; i< this.orgFun.length -1; i++ ){
+        argStr += 'cx_arg_' + i + ' , ';
+      }
+      if( i === this.orgFun.length -1 ) {
+        argStr += 'cx_arg_' + i;
+      }
+  
+      proxyStr = proxyStr.replace(/\(\)/, '(' + argStr + ')');
       eval("var proxy = " + proxyStr);
 
       // now map any properties over
       extend(proxy, this.orgFun);
       proxy.prototype = this.orgFun.prototype;
-      proxy.__concurix_wrapper_for__ = orgFuncName;
+      proxy.__concurix_wrapper_for__ = orgFuncName || 'anonymous' ;
       proxy.__concurix_proxy_state__ = this;
       this.orgFun.__concurix_wrapped_by__ = proxy;  
       return proxy;      
