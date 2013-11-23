@@ -191,24 +191,26 @@ module.exports = function wrap(wrapFun){
       }
       // keep the original func name and length using eval
       var orgFuncName = this.orgFun.name;
+      var orgFuncLen  = this.orgFun.length;
+
+      proxyStr = concurixProxy.toString();
 
       if (orgFuncName) {
-        proxyStr = concurixProxy.toString().replace(/^function/, 'function ' + orgFuncName);
+        proxyStr = proxyStr.replace(/^function/, 'function ' + orgFuncName);
 
-      } else {
-        proxyStr = concurixProxy.toString();
       }
-
-      var i = 0;
-      var argStr = '';
-      for( i ; i< this.orgFun.length -1; i++ ){
-        argStr += 'cx_arg_' + i + ' , ';
-      }
-      if( i === this.orgFun.length -1 ) {
-        argStr += 'cx_arg_' + i;
+      if( orgFuncLen ){
+        var i = 0;
+        var argStr = '';
+        for( i ; i< this.orgFun.length -1; i++ ){
+          argStr += 'cx_arg_' + i + ' , ';
+        }
+        if( i === this.orgFun.length -1 ) {
+          argStr += 'cx_arg_' + i;
+        }        
+        proxyStr = proxyStr.replace(/\(\)/, '(' + argStr + ')');
       }
   
-      proxyStr = proxyStr.replace(/\(\)/, '(' + argStr + ')');
       eval("var proxy = " + proxyStr);
 
       // now map any properties over
