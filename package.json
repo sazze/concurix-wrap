@@ -1,6 +1,6 @@
 {
   "name": "concurix-wrap",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Wrap javascript functions according to configurable rules.",
   "main": "index.js",
   "scripts": {
