@@ -100,11 +100,29 @@ module.exports = function wrap(wrapFun){
       var concurixProxy = function() {
         var self = this;
         var state = arguments.callee.__concurix_proxy_state__;
+
+        var _args = arguments;
+        function runOriginal() {
+          if (self instanceof state.orgFun) {
+            if (_args.length === 0) {
+              return new state.orgFun()
+            }
+            else {
+              var obj = Object.create(state.orgFun.prototype);
+              state.orgFun.apply(obj, _args);
+              return obj;
+            }
+          }
+          else {
+            return state.orgFun.apply(self, _args);
+          }
+        }
+
         if (!state ){
           return null;
         }
         if (block_tracing){
-          return state.orgFun.apply(this, arguments);
+          return runOriginal();
         }
 
         block_tracing = true;
@@ -137,7 +155,7 @@ module.exports = function wrap(wrapFun){
         var startMem = process.memoryUsage().heapUsed;
         try{
           block_tracing = false;
-          var ret = state.orgFun.apply(self, arguments);
+          var ret = runOriginal();
         } catch (e) {
           // it's a bit unfortunate we have to catch and rethrow these, but some nodejs modules like
           // fs use exception handling as flow control for normal cases vs true exceptions.

@@ -232,5 +232,54 @@ describe('basic wrapping test', function(){
       b.should.equal(c);
       });
     });
-  }); 
+  });
+
+  describe('test module constructor', function(){
+    it('simple constructor (new)', function(){
+      function Cat() {}
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c();
+      instance.should.equal(captured);
+      instance.meow().should.equal('meow');
+    });
+
+    it('constructor w/ args (new)', function(){
+      function Cat(name) {this.name = name;}
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c('felix');
+      instance.should.equal(captured);
+      instance.meow().should.equal('meow');
+      instance.name.should.equal('felix');
+    });
+
+    it('constructor as factory', function(){
+      function Cat(name) {
+        if (!(this instanceof Cat)) return new Cat(name);
+        this.name = name;
+      }
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = c('felix');
+      instance.should.equal(captured);
+      instance.meow().should.equal('meow');
+      instance.name.should.equal('felix');
+    });
+  });
 });
