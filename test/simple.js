@@ -281,5 +281,20 @@ describe('basic wrapping test', function(){
       instance.meow().should.equal('meow');
       instance.name.should.equal('felix');
     });
+
+    it('ignores bound functions', function (){
+      function z() {return true;}
+      // actually using bind means we can never wrap -- sees it as [native code]
+      var y = Function.prototype.call.bind(z);
+      var w = wrap(y).getProxy();
+      w().should.be.true;
+    });
+
+    it('ignores broken prototypes', function (){
+      function z() {return true;}
+      z.prototype = undefined;
+      var w = wrap(z).getProxy();
+      w().should.be.true;
+    });
   });
 });

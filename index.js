@@ -103,7 +103,7 @@ module.exports = function wrap(wrapFun){
 
         var _args = arguments;
         function runOriginal() {
-          if (self instanceof state.orgFun) {
+          if (state.orgFun.prototype && self instanceof state.orgFun) {
             if (_args.length === 0) {
               return new state.orgFun()
             }
