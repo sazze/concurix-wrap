@@ -105,13 +105,13 @@ module.exports = function wrap(wrapFun){
 
         var _args = arguments;
         function runOriginal() {
-          if( false && state.orgFun.prototype && self instanceof http.Agent ){
+          /*if( false && state.orgFun.prototype && self instanceof http.Agent ){
             console.log('got agent ');
             //return state.orgFun.apply(self, _args); 
               var obj = Object.create(state.orgFun.prototype);
               state.orgFun.apply(obj, _args);
               return obj;
-          } else if (state.orgFun.prototype && self instanceof state.orgFun && !self.__concurix_constructor_called) {
+          } else */ if (state.orgFun.prototype && self instanceof state.orgFun && !self.__concurix_constructor_called) {
             if (_args.length === 0) {
               var obj = new state.orgFun()
               obj.__concurix_constructor_called = true;
