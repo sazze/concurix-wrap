@@ -282,6 +282,42 @@ describe('basic wrapping test', function(){
       instance.name.should.equal('felix');
     });
 
+    it('constructor returns obj', function(){
+      function Cat(name) {
+        var foo = {name: name};
+        return foo;
+      }
+      // returned object won't get this...
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c('felix');
+      instance.should.equal(captured);
+      instance.name.should.equal('felix');
+    });
+
+    it('constructor returns obj w/ args', function(){
+      function Cat() {
+        var foo = {name: 'anon'};
+        return foo;
+      }
+      // returned object won't get this...
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c();
+      instance.should.equal(captured);
+      instance.name.should.equal('anon');
+    });
+
     it('ignores bound functions', function (){
       function z() {return true;}
       // actually using bind means we can never wrap -- sees it as [native code]

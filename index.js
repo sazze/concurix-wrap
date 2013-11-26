@@ -109,8 +109,8 @@ module.exports = function wrap(wrapFun){
             }
             else {
               var obj = Object.create(state.orgFun.prototype);
-              state.orgFun.apply(obj, _args);
-              return obj;
+              var override = state.orgFun.apply(obj, _args);
+              return (override != null && typeof override === "object") ? override : obj;
             }
           }
           else {
@@ -193,7 +193,7 @@ module.exports = function wrap(wrapFun){
       var orgFuncName = this.orgFun.name;
       var orgFuncLen  = this.orgFun.length;
 
-      proxyStr = concurixProxy.toString();
+      var proxyStr = concurixProxy.toString();
 
       if (orgFuncName) {
         proxyStr = proxyStr.replace(/^function/, 'function ' + orgFuncName);
@@ -211,7 +211,8 @@ module.exports = function wrap(wrapFun){
         proxyStr = proxyStr.replace(/\(\)/, '(' + argStr + ')');
       }
   
-      eval("var proxy = " + proxyStr);
+      var proxy;
+      eval("proxy = " + proxyStr);
 
       // now map any properties over
       extend(proxy, this.orgFun);
