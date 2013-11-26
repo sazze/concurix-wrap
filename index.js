@@ -15,6 +15,8 @@ var util = require('./util');
 var extend = util.extend;
 var log = util.log;
 
+var http = require('http');
+
 // Main wrap function.  For any future contributors, note that we use a number of locally 
 // created objects so that we can have very precise control over instances and where the prototype
 // points to.
@@ -103,16 +105,28 @@ module.exports = function wrap(wrapFun){
 
         var _args = arguments;
         function runOriginal() {
-          if (state.orgFun.prototype && self instanceof state.orgFun) {
-            if (_args.length === 0) {
-              return new state.orgFun()
-            }
-            else {
+          if( false && state.orgFun.prototype && self instanceof http.Agent ){
+            console.log('got agent ');
+            //return state.orgFun.apply(self, _args); 
               var obj = Object.create(state.orgFun.prototype);
               state.orgFun.apply(obj, _args);
               return obj;
+          } else if (state.orgFun.prototype && self instanceof state.orgFun && !self.__concurix_constructor_called) {
+            if (_args.length === 0) {
+              var obj = new state.orgFun()
+              obj.__concurix_constructor_called = true;
+              return obj;
             }
-          }
+            else {
+              var obj = Object.create(state.orgFun.prototype);
+              obj.__concurix_constructor_called = true;
+              var ret = state.orgFun.apply(obj, _args);
+              if( ret instanceof Object ){
+                return ret;
+              }
+              return obj;
+            }
+          } 
           else {
             return state.orgFun.apply(self, _args);
           }
@@ -193,7 +207,7 @@ module.exports = function wrap(wrapFun){
       var orgFuncName = this.orgFun.name;
       var orgFuncLen  = this.orgFun.length;
 
-      proxyStr = concurixProxy.toString();
+      var proxyStr = concurixProxy.toString();
 
       if (orgFuncName) {
         proxyStr = proxyStr.replace(/^function/, 'function ' + orgFuncName);
