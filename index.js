@@ -103,14 +103,19 @@ module.exports = function wrap(wrapFun){
 
         var _args = arguments;
         function runOriginal() {
-          if (state.orgFun.prototype && Object.getPrototypeOf(self) === state.orgFun.prototype) {
+          var ret;
+          if (state.orgFun.prototype && Object.getPrototypeOf(self) === state.orgFun.prototype && (!self || !self.__concurix_constructed_obj__)) {
             if (_args.length === 0) {
-              return new state.orgFun()
+              ret = new state.orgFun();
+              ret.__concurix_constructed_obj__ = true;
+              return ret;
             }
             else {
               var obj = Object.create(state.orgFun.prototype);
               var override = state.orgFun.apply(obj, _args);
-              return (override != null && typeof override === "object") ? override : obj;
+              ret = (override != null && typeof override === "object") ? override : obj;
+              ret.__concurix_constructed_obj__ = true;
+              return ret;
             }
           }
           else {
@@ -174,6 +179,7 @@ module.exports = function wrap(wrapFun){
           } 
         } catch(e) {
           log('concurix.wrapper afterFun: error', e);
+          log(e.stack);
         }
         block_tracing = false;
         if( doRethrow ){

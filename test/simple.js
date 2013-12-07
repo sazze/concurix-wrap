@@ -332,5 +332,14 @@ describe('basic wrapping test', function(){
       var w = wrap(z).getProxy();
       w().should.be.true;
     });
+
+    it('handles double constructor calls', function (){
+      function z() { this.a = this.a + 1 || 1;}
+      var W = wrap(z).getProxy();
+      var w = new W();
+      w.a.should.equal(1);
+      w.constructor();
+      w.a.should.equal(2);
+    });
   });
 });
