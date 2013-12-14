@@ -112,6 +112,7 @@ module.exports = function wrap(wrapFun){
             }
             else {
               var obj = Object.create(state.orgFun.prototype);
+              extend(obj, state.orgFun);
               var override = state.orgFun.apply(obj, _args);
               ret = (override != null && typeof override === "object") ? override : obj;
               ret.__concurix_constructed_obj__ = true;

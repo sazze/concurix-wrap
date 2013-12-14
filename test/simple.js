@@ -1,5 +1,6 @@
 var should = require('should');
 var wrap = require('../index.js');
+var util = require('util');
 
 function singleton(arg1, arg2){
   return arg1 + arg2;
@@ -247,6 +248,80 @@ describe('basic wrapping test', function(){
       var instance = new c();
       instance.should.equal(captured);
       instance.meow().should.equal('meow');
+    });
+
+    it('constructed instance methods have `this`', function(){
+      function Cat() {this.name = 'felix'}
+      Cat.prototype.meow = function () {return 'meow'}
+      Cat.prototype.getName = function () { return this.name }
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c();
+      instance.should.equal(captured);
+      instance.meow().should.equal('meow');
+      instance.getName().should.equal('felix');
+    });
+
+    it('wrapped instance methods work as expected', function(){
+      function Cat() {this.name = 'felix'}
+      Cat.prototype.meow = function () {return 'meow'}
+      Cat.prototype.getName = function () { return this.name }
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c();
+      instance.should.equal(captured);
+      instance.meow = wrap(instance.meow).getProxy();
+      instance.getName = wrap(instance.getName).getProxy();
+      instance.meow().should.equal('meow');
+      instance.getName().should.equal('felix');
+    });
+
+    it('nested constructors', function(){
+      function CatFood() { this.eaten = true; }
+      function Cat(name) { this.name = name; this.dinner = new CatFood();}
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c('felix');
+      instance.should.equal(captured);
+      instance.meow().should.equal('meow');
+      instance.name.should.equal('felix');
+      instance.dinner.eaten.should.be.true;
+    });
+
+    it('parent properties', function(){
+      function Pet() {
+        Cat.call(this);
+      }
+      Pet.status = {alive: "yes", fed: "nope"}
+      function Cat(name) {
+        this.isAlive = this.status.alive;
+      }
+      Cat.prototype.meow = function () {return 'meow'}
+
+      var captured;
+      function a(trace) {
+        captured = trace.ret;
+      }
+      var c = wrap(Cat).after(a).getProxy();
+      var instance = new c('felix');
+      instance.should.equal(captured);
+      instance.meow().should.equal('meow');
+      instance.name.should.equal('felix');
+      instance.isAlive.should.equal('yes')
+      instance.dinner.eaten.should.be.true;
     });
 
     it('constructor w/ args (new)', function(){
