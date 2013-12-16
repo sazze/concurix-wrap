@@ -87,9 +87,11 @@ module.exports = function wrap(wrapFun){
     getProxy: function getProxy(){
       //first handle the case where we are wrapping a proxy or wrapping a function that already has a proxy
       //TODO--it might be useful to try to merge clientState if we already have a proxy.
-      if(this.orgFun.__concurix_wrapped_by__){
-        extend(this.orgFun.__concurix_wrapped_by__, this.orgFun);
-        return this.orgFun.__concurix_wrapped_by__;
+      if (this.orgFun.__concurix_wrapped_by__) {
+        if (this.orgFun.__concurix_wrapped_by__.__concurix_proxy_state__.orgFun.toString() === this.orgFun.toString()) {
+          extend(this.orgFun.__concurix_wrapped_by__, this.orgFun);
+          return this.orgFun.__concurix_wrapped_by__;
+        }
       }
       if(this.orgFun.__concurix_wrapper_for__){
         extend(this.orgFun, this.orgFun.__concurix_proxy_state__.orgFun);
@@ -112,7 +114,6 @@ module.exports = function wrap(wrapFun){
             }
             else {
               var obj = Object.create(state.orgFun.prototype);
-              extend(obj, state.orgFun);
               var override = state.orgFun.apply(obj, _args);
               ret = (override != null && typeof override === "object") ? override : obj;
               ret.__concurix_constructed_obj__ = true;
@@ -221,8 +222,7 @@ module.exports = function wrap(wrapFun){
       var proxy;
       eval("proxy = " + proxyStr);
 
-      // now map any properties over
-      extend(proxy, this.orgFun);
+      proxy.__proto__ = this.orgFun
       proxy.prototype = this.orgFun.prototype;
       proxy.__concurix_wrapper_for__ = orgFuncName || 'anonymous' ;
       proxy.__concurix_proxy_state__ = this;
@@ -246,13 +246,6 @@ module.exports.isWrapper = function isWrapper(obj){
 
 module.exports.getWrapper = function getWrapper(obj){
   var proxy = obj.__concurix_wrapped_by__;
-  return proxy;
-}
-
-module.exports.extendOriginalToWrapper = function extendOriginalToWrapper(proxy){
-  if( proxy && proxy.__concurix_proxy_state__){
-    util.extend(proxy, proxy.__concurix_proxy_state__.orgFun);
-  }
   return proxy;
 }
 

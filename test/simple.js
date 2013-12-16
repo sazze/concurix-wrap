@@ -198,18 +198,18 @@ describe('basic wrapping test', function(){
     });
   });
 
-  describe('test extendOriginalToWrapper', function(){
-    it('should extend Original', function(){
-      function a(arg1, arg2){
-        return arg1 + arg2;
-      }      
+  // describe('test extendOriginalToWrapper', function(){
+  //   it('should extend Original', function(){
+  //     function a(arg1, arg2){
+  //       return arg1 + arg2;
+  //     }      
 
-      var b = wrap(a).getProxy();
-      a.newField = 'hello';
-      b.should.not.have.property('newField');
-      wrap.extendOriginalToWrapper(b).newField.should.equal('hello');
-    });
-  });
+  //     var b = wrap(a).getProxy();
+  //     a.newField = 'hello';
+  //     b.should.not.have.property('newField');
+  //     wrap.extendOriginalToWrapper(b).newField.should.equal('hello');
+  //   });
+  // });
 
   describe('test extendWrapperToOriginal', function(){
     it('should extend Original', function(){
@@ -286,28 +286,9 @@ describe('basic wrapping test', function(){
 
     it('nested constructors', function(){
       function CatFood() { this.eaten = true; }
-      function Cat(name) { this.name = name; this.dinner = new CatFood();}
-      Cat.prototype.meow = function () {return 'meow'}
-
-      var captured;
-      function a(trace) {
-        captured = trace.ret;
-      }
-      var c = wrap(Cat).after(a).getProxy();
-      var instance = new c('felix');
-      instance.should.equal(captured);
-      instance.meow().should.equal('meow');
-      instance.name.should.equal('felix');
-      instance.dinner.eaten.should.be.true;
-    });
-
-    it('parent properties', function(){
-      function Pet() {
-        Cat.call(this);
-      }
-      Pet.status = {alive: "yes", fed: "nope"}
       function Cat(name) {
-        this.isAlive = this.status.alive;
+        this.name = name;
+        this.dinner = new CatFood();
       }
       Cat.prototype.meow = function () {return 'meow'}
 
@@ -320,7 +301,6 @@ describe('basic wrapping test', function(){
       instance.should.equal(captured);
       instance.meow().should.equal('meow');
       instance.name.should.equal('felix');
-      instance.isAlive.should.equal('yes')
       instance.dinner.eaten.should.be.true;
     });
 

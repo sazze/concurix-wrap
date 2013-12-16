@@ -13,13 +13,13 @@ module.exports = Util;
 
 function Util(options){}
 
-Util.extend = function extend(dst, src){
+Util.extend = function extend(dst, src) {
   Util.iterateOwnProperties(src, function iterator(key){
     var dstPropDesc = Object.getOwnPropertyDescriptor(dst, key);
     if (dstPropDesc && (!dstPropDesc.configurable )) {
       return;
     }
-    
+
     var srcPropDesc = Object.getOwnPropertyDescriptor(src, key);
     dstPropDesc = {};
     dstPropDesc[key] = srcPropDesc;
@@ -29,7 +29,7 @@ Util.extend = function extend(dst, src){
 
 Util.iterateOwnProperties = function iterateOwnProperties(obj, iterator){
   Object.getOwnPropertyNames(obj || {}).forEach(function(key) {
-    var protectedKeys = key === 'prototype' || key === 'caller' || key === 'length' || key === 'constructor';
+    var protectedKeys = key === 'prototype' || key === 'caller' || key === 'arguments' || key === 'length' || key === 'constructor' || key === 'name';
     if (protectedKeys || key.indexOf('__concurix') >= 0) {
       return;
     }
