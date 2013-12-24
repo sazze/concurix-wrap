@@ -94,7 +94,6 @@ module.exports = function wrap(wrapFun){
         }
       }
       if(this.orgFun.__concurix_wrapper_for__){
-        extend(this.orgFun, this.orgFun.__concurix_proxy_state__.orgFun);
         return this.orgFun;
       }
 
