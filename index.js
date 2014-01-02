@@ -158,7 +158,6 @@ module.exports = function wrap(wrapFun){
         //re-assign any properties back to the original function
         extend(state.orgFun, arguments.callee);
       
-        var startMem = process.memoryUsage().heapUsed;
         try{
           block_tracing = false;
           var ret = runOriginal();
@@ -171,7 +170,6 @@ module.exports = function wrap(wrapFun){
         block_tracing = true;
         //save return value, exec time and call cxAfterHook
         try {
-          trace.memDelta = process.memoryUsage().heapUsed - startMem;
           trace.ret = ret;
           trace.startTime = startTime;
           trace.execTime = process.hrtime(startTime);
