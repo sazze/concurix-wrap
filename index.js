@@ -74,7 +74,7 @@ module.exports = function wrap(wrapFun){
         // code to do our best to be able to compare the same function
         funInfo.file = this.moduleName;
         funInfo.loc = {position: 0, line: 0};
-        funInfo.id = computeHash(this.moduleName + funSrc);
+        funInfo.id = computeHash(this.moduleName + funInfo.name + funSrc);
       }  
     },
     
